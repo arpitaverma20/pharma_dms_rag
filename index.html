@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pharma DMS RAG</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+            padding: 40px;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            max-width: 700px;
+            margin: auto;
+            border-radius: 8px;
+        }
+        textarea, select, button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        pre {
+            background: #eee;
+            padding: 10px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>📄 Pharma DMS RAG Assistant</h2>
+
+    <label>Module</label>
+    <select id="module">
+        <option value="production">Production</option>
+        <option value="quality">Quality</option>
+        <option value="inventory">Inventory</option>
+    </select>
+
+    <label>Ask a question</label>
+    <textarea id="query" rows="4" placeholder="e.g. Batch Manufacturing Record"></textarea>
+
+    <button onclick="search()">Search</button>
+
+    <h3>Answer</h3>
+    <pre id="answer"></pre>
+</div>
+
+<script>
+function search() {
+    const query = document.getElementById("query").value;
+    const module = document.getElementById("module").value;
+
+    fetch("/query", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query, module })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("answer").textContent =
+            data.answer || JSON.stringify(data, null, 2);
+    })
+    .catch(err => {
+        document.getElementById("answer").textContent = "Error: " + err;
+    });
+}
+</script>
+
+</body>
+</html>
